@@ -10,16 +10,17 @@ const seedRoutes = require('./routes/seedRoutes');
 const dashboardRoutes = require('./routes/dashboardRoutes');
 const analyticsRoutes = require('./routes/analyticsRoutes');
 
-const app = express();
-const server = require('http').createServer(app);
-const io = require('socket.io')(server, {
-  cors: { origin: "*", methods: ["GET", "POST"] }
-});
 const authRoutes = require('./routes/authRoutes');
 const auth = require('./middleware/auth');
 
+const app = express();
+const server = require('http').createServer(app);
 
-// ✅ CORS MUST BE FIRST
+const io = require('socket.io')(server, {
+  cors: { origin: "*", methods: ["GET", "POST"] }
+});
+
+// ✅ CORS FIRST
 app.use(cors({
   origin: [
     "http://localhost:5173",
@@ -29,19 +30,20 @@ app.use(cors({
 }));
 
 app.use(express.json());
+
+// ✅ Test route (important for Render)
 app.get("/", (req, res) => {
   res.send("🚀 Dashboard Builder API is running!");
 });
 
 // Middleware
-
-
 app.use(helmet({
-  contentSecurityPolicy: false, // For development ease
+  contentSecurityPolicy: false,
 }));
+
 app.use(morgan('dev'));
 
-// Attach IO to request
+// Attach socket
 app.use((req, res, next) => {
   req.io = io;
   next();
@@ -54,11 +56,12 @@ app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/auth', authRoutes);
 
+// Health check
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'OK' });
 });
 
-// Final Robust Error Handler
+// Error handler
 app.use((err, req, res, next) => {
   console.error('[SERVER ERROR]', err);
   res.status(err.status || 500).json({
@@ -67,19 +70,22 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Port
+// ✅ PORT FIX
 const PORT = process.env.PORT || 5000;
 
-// Connect to MongoDB
-const MONGODB_URI = process.env.MONGODB_URI ;
+// ✅ ENV FIX (important)
+const MONGODB_URI = process.env.MONGO_URI;
 
+// ✅ CONNECT + START SERVER (ONLY ONCE)
 mongoose.connect(MONGODB_URI)
   .then(() => {
     console.log('✅ Connected to MongoDB');
-    console.log("DB:", MONGODB_URI)
+    console.log("DB:", MONGODB_URI);
+
     server.listen(PORT, () => {
       console.log(`🚀 Server running on port ${PORT}`);
     });
+
   })
   .catch((err) => {
     console.error('❌ MongoDB connection error:', err);
