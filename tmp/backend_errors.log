@@ -1,0 +1,14 @@
+[2026-03-14T17:58:33.137Z] ValidationError: Order validation failed: createdBy: Please fill the field, unitPrice: Please fill the field, quantity: Please fill the field, product: Please fill the field, country: Please fill the field, postalCode: Please fill the field, state: Please fill the field, city: Please fill the field, streetAddress: Please fill the field, phone: Please fill the field, email: Please fill the field, lastName: Please fill the field
+ValidationError: Order validation failed: createdBy: Please fill the field, unitPrice: Please fill the field, quantity: Please fill the field, product: Please fill the field, country: Please fill the field, postalCode: Please fill the field, state: Please fill the field, city: Please fill the field, streetAddress: Please fill the field, phone: Please fill the field, email: Please fill the field, lastName: Please fill the field
+    at model.validate (C:\halll\backend\node_modules\mongoose\lib\document.js:2864:36)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async model.$__save (C:\halll\backend\node_modules\mongoose\lib\model.js:389:7)
+    at async model.save (C:\halll\backend\node_modules\mongoose\lib\model.js:663:5)
+    at async exports.createOrder (C:\halll\backend\controllers\orderController.js:7:5)
+
+[2026-03-14T17:58:33.157Z] TypeError: next is not a function
+TypeError: next is not a function
+    at model.<anonymous> (C:\halll\backend\models\Order.js:58:3)
+    at Kareem.execPre (C:\halll\backend\node_modules\kareem\index.js:68:39)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+
